@@ -95,17 +95,15 @@ sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
-# At the worker nodes (after you install docker and all its requirements) do a command like this, it is shown in the output from kubeadm init:
-kubeadm join 192.168.2.98:6443 --token wm2i1z.n64ym9oh2mr8ibwl \
+
+# At the worker nodes (after you install docker and kube programs) do a command like this, it is shown in the output from kubeadm init:
+sudo kubeadm join 192.168.2.98:6443 --token wm2i1z.n64ym9oh2mr8ibwl \
     --discovery-token-ca-cert-hash sha256:f1c2905d5cad536ecf36511d93a31c22a1057d61ee857fc9dfa767a3b88cac82 
 
-# at the masternode, install the chosen CNI (calico, in our case, other option would be flannel)
-kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
-kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml
+# label the worker nodes (from the master node)
+kubectl label node workernode-1 node-role.kubernetes.io/worker1:w1
+kubectl label node workernode-2 node-role.kubernetes.io/worker2:w1
+kubectl label node workernode-3 node-role.kubernetes.io/worker3:w1
 
-watch kubectl get pods -n calico-system
-
-
-
-
+kubectl get nodes -o wide
 
