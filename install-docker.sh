@@ -19,8 +19,8 @@ sudo add-apt-repository \
    $(lsb_release -cs) \
    stable"
 
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo apt-get update -y 
+sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 
 sudo docker run hello-world
 
