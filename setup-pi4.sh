@@ -24,9 +24,16 @@ arp -a | findstr dc-a6-32
 # This will return an output similar to:
  ? (xx.xx.xx.x) at b8:27:eb:yy:yy:yy [ether] on wlp2s0
 
+# or use ping:
+ping ubuntu
+
 # Using an SSH client
 ssh ubuntu@<Raspberry Pi’s IP address>
 
 # Update UBUNTU
 sudo apt update -y
 sudo apt upgrade -y
+
+# Proceed to bootstrap the cluster using kubeadm
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/
+
