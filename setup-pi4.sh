@@ -34,6 +34,8 @@ ssh ubuntu@<Raspberry Pi’s IP address>
 sudo apt update -y
 sudo apt upgrade -y
 
+# Install docker on all nodes ==> https://docs.docker.com/engine/install/ubuntu/
+
 # Proceed to bootstrap the cluster using kubeadm
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/
 
