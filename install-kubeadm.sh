@@ -52,21 +52,30 @@ sudo sed -i '$ s/$/ cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 sw
 
 # pre-pull images needed by kubeadm init
 kubeadm config images pull
+
+# at the master node do this:
 sudo kubeadm init --kubernetes-version=v1.20.1 --pod-network-cidr=192.168.0.0/16
 
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
+# Optional step to allow scheduling of PODs in the master node
+kubectl taint nodes --all node-role.kubernetes.io/master-
+kubectl get nodes -o wide
+
+
+# At the worker nodes (after you install docker and all its requirements) do a command like this, it is shown in the output from kubeadm init:
+kubeadm join 192.168.2.98:6443 --token wm2i1z.n64ym9oh2mr8ibwl \
+    --discovery-token-ca-cert-hash sha256:f1c2905d5cad536ecf36511d93a31c22a1057d61ee857fc9dfa767a3b88cac82 
+
+# at the masternode, install the chosen CNI (calico, in our case, other option would be flannel)
 kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
 kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml
 
 watch kubectl get pods -n calico-system
 
-# Optional step to allow scheduling of PODs in the master node
-kubectl taint nodes --all node-role.kubernetes.io/master-
 
-kubectl get nodes -o wide
 
 # Kubernetes networking basics
 # The Kubernetes network model defines a “flat” network in which:
