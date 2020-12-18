@@ -50,6 +50,8 @@ sudo systemctl restart kubelet
 # Note the space before "cgroup_enable=cpuset", to add a space after the last existing item on the line
 sudo sed -i '$ s/$/ cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 swapaccount=1/' /boot/firmware/cmdline.txt
 
+# pre-pull images needed by kubeadm init
+kubeadm config images pull
 sudo kubeadm init --kubernetes-version=v1.20.1 --pod-network-cidr=192.168.0.0/16
 
 mkdir -p $HOME/.kube
