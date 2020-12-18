@@ -19,17 +19,20 @@ sudo add-apt-repository \
    $(lsb_release -cs) \
    stable"
 
+echo "install docker ce"
 sudo apt-get update -y 
 sudo apt-get install docker-ce docker-ce-cli containerd.io -y
-
+echo "test if docker is working"
 sudo docker run hello-world
 
+echo "adding your user to the docker group"
 sudo usermod -aG docker $USER
 
 sudo systemctl enable docker
 
 sudo docker info
 
+echo "configure iptables"
 # Enable net.bridge.bridge-nf-call-iptables and -iptables6
 cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
@@ -49,6 +52,7 @@ cat <<EOF | sudo tee /etc/docker/daemon.json
 }
 EOF
 
+echo "setup the docker service to start at reboot"
 # Create /etc/systemd/system/docker.service.d
 sudo mkdir -p /etc/systemd/system/docker.service.d
 

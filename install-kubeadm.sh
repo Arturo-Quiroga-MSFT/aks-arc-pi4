@@ -60,10 +60,40 @@ mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
+# Kubernetes networking basics
+# The Kubernetes network model defines a “flat” network in which:
+# - Every pod get its own IP address.
+# - Pods on any node can communicate with all pods on all other nodes without NAT.
+# - This creates a clean, backwards-compatible model where pods can be treated much like VMs or physical hosts from the perspectives of port allocation, 
+#   naming, service discovery, load balancing, application configuration, and migration. Network segmentation can be defined using network policies 
+#   to restrict traffic within these base networking capabilities.
+
+# Within this model there’s quite a lot of flexibility for supporting different networking approaches and environments. 
+# The details of exactly how the network is implemented depend on the combination of CNI, network, and cloud provider plugins being used.
+
+# At the masternode, install the chosen CNI (calico, in our case, other option would be flannel)
+# from ==> https://docs.projectcalico.org/getting-started/kubernetes/self-managed-onprem/onpremises#install-calico-on-nodes
+curl https://docs.projectcalico.org/manifests/calico.yaml -O
+kubectl apply -f calico.yaml
+
+# The above step takes a while *** BE PATIENT***, and while things are deployed pods will go to error and some conatiners need time to be createdd
+
+kubectl get pods --all-namespaces
+kubectl get nodes -o wide
+
 # Optional step to allow scheduling of PODs in the master node
 kubectl taint nodes --all node-role.kubernetes.io/master-
 kubectl get nodes -o wide
 
+# At the worker nodes (after you install docker and all its requirements) install kubeadm, kubectl and kubelet.
+sudo apt-get update && sudo apt-get install -y apt-transport-https curl
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
 
 # At the worker nodes (after you install docker and all its requirements) do a command like this, it is shown in the output from kubeadm init:
 kubeadm join 192.168.2.98:6443 --token wm2i1z.n64ym9oh2mr8ibwl \
@@ -77,15 +107,5 @@ watch kubectl get pods -n calico-system
 
 
 
-# Kubernetes networking basics
-# The Kubernetes network model defines a “flat” network in which:
-# - Every pod get its own IP address.
-# - Pods on any node can communicate with all pods on all other nodes without NAT.
-# - This creates a clean, backwards-compatible model where pods can be treated much like VMs or physical hosts from the perspectives of port allocation, 
-#   naming, service discovery, load balancing, application configuration, and migration. Network segmentation can be defined using network policies 
-#   to restrict traffic within these base networking capabilities.
-
-# Within this model there’s quite a lot of flexibility for supporting different networking approaches and environments. 
-# The details of exactly how the network is implemented depend on the combination of CNI, network, and cloud provider plugins being used.
 
 
