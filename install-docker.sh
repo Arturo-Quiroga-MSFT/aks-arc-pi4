@@ -1,6 +1,6 @@
 # from ==> https://docs.docker.com/engine/install/ubuntu/
 
-sudo apt-get update
+sudo apt-get update -y
 
 sudo apt-get install \
     apt-transport-https \
