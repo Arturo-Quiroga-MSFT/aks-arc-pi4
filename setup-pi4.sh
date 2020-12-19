@@ -27,15 +27,22 @@ arp -a | findstr dc-a6-32
 # or use ping:
 ping ubuntu
 
-# Using an SSH client
+# or find it via your router's gui
+
+# login to ubuntu (original hostname is ubuntu, original username and password is ubuntu)
 ssh ubuntu@<Raspberry Pi’s IP address>
+
+# change hostname
+hostnamectl set-hostname <new name>
 
 # Update UBUNTU
 sudo apt update -y
 sudo apt upgrade -y
 
-# Install docker on all nodes ==> https://docs.docker.com/engine/install/ubuntu/
+# 1. Install docker on all nodes ==> https://docs.docker.com/engine/install/ubuntu/
+# see install-docker.sh
 
-# Proceed to bootstrap the cluster using kubeadm
+# 2. Proceed to bootstrap the cluster using kubeadm
+# see install-kubeadm.sh
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/
 
