@@ -22,7 +22,7 @@ cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
 deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 
-sudo apt-get update
+sudo apt-get update -y
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
@@ -50,11 +50,15 @@ sudo systemctl restart kubelet
 # Note the space before "cgroup_enable=cpuset", to add a space after the last existing item on the line
 sudo sed -i '$ s/$/ cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 swapaccount=1/' /boot/firmware/cmdline.txt
 
-# pre-pull images needed by kubeadm init
+# pre-pull images needed by kubeadm init (if you want to install the latest version)
 kubeadm config images pull
 
-# at the master node do this:
-sudo kubeadm init --kubernetes-version=v1.20.1 --pod-network-cidr=192.168.0.0/16
+# at the master node do this, to do a dry run first
+sudo kubeadm init --dry-run --kubernetes-version=v1.19 --pod-network-cidr=192.168.0.0/16
+
+# if everything is ok, then do it for real
+sudo kubeadm init --kubernetes-version=v1.19.1 --pod-network-cidr=192.168.0.0/16
+
 
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config

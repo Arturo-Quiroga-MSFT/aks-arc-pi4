@@ -21,7 +21,10 @@ sudo add-apt-repository \
 
 echo "install docker ce"
 sudo apt-get update -y 
-sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+# To install latest version which is 20.10 ==> sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+# To install a specific version of docker-ce, list and select the versions in the repo, for instance 19.03.10
+apt-cache madison docker-ce
+sudo apt-get install docker-ce=5:19.03.10~3-0~ubuntu-focal docker-ce-cli=5:19.03.10~3-0~ubuntu-focal containerd.io
 echo "test if docker is working"
 sudo docker run hello-world
 
@@ -38,7 +41,7 @@ cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF
-$ sudo sysctl --system
+sudo sysctl --system
 
 # Set up the Docker daemon
 cat <<EOF | sudo tee /etc/docker/daemon.json
@@ -59,8 +62,6 @@ sudo mkdir -p /etc/systemd/system/docker.service.d
 # Restart Docker
 sudo systemctl daemon-reload
 sudo systemctl restart docker
-
-
 
 # PRIOR TO RUNNING kubeadm!!!
 # Append the cgroups and swap options to the kernel command line
