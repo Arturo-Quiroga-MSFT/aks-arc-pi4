@@ -24,7 +24,7 @@ sudo apt-get update -y
 # To install latest version which is 20.10 ==> sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 # To install a specific version of docker-ce, list and select the versions in the repo, for instance 19.03.10
 apt-cache madison docker-ce
-sudo apt-get install docker-ce=5:19.03.10~3-0~ubuntu-focal docker-ce-cli=5:19.03.10~3-0~ubuntu-focal containerd.io
+sudo apt-get install -y docker-ce=5:19.03.10~3-0~ubuntu-focal docker-ce-cli=5:19.03.10~3-0~ubuntu-focal containerd.io
 echo "test if docker is working"
 sudo docker run hello-world
 

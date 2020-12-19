@@ -80,7 +80,8 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 curl https://docs.projectcalico.org/manifests/calico.yaml -O
 kubectl apply -f calico.yaml
 
-# The above step takes a while *** BE PATIENT***, and while things are deployed pods will go to error and some conatiners need time to be createdd
+# The above step takes a while *** BE PATIENT***, the calico containrs take a while to create and start,
+# and while things are being deployed pods may show errors.
 
 kubectl get pods --all-namespaces
 kubectl get nodes -o wide
@@ -89,13 +90,16 @@ kubectl get nodes -o wide
 kubectl taint nodes --all node-role.kubernetes.io/master-
 kubectl get nodes -o wide
 
+# at the workernodes, install DOCKER_CE
+# ==> use ./install-docker.sh
+
 # At the worker nodes (after you install docker and all its requirements) install kubeadm, kubectl and kubelet.
 sudo apt-get update && sudo apt-get install -y apt-transport-https curl
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
 deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
-sudo apt-get update
+sudo apt-get update -y
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
@@ -104,7 +108,7 @@ sudo apt-mark hold kubelet kubeadm kubectl
 sudo kubeadm join 192.168.2.98:6443 --token wm2i1z.n64ym9oh2mr8ibwl \
     --discovery-token-ca-cert-hash sha256:f1c2905d5cad536ecf36511d93a31c22a1057d61ee857fc9dfa767a3b88cac82 
 
-# label the worker nodes (from the master node)
+# At the masternode, label the worker nodes 
 kubectl label node workernode-1 node-role.kubernetes.io/worker1:w1
 kubectl label node workernode-2 node-role.kubernetes.io/worker2:w1
 kubectl label node workernode-3 node-role.kubernetes.io/worker3:w1
